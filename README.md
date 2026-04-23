@@ -1,1 +1,0 @@
-# fallout-starter-picker
