@@ -166,11 +166,31 @@ function getSprite(name) {
   const base = "https://play.pokemonshowdown.com/sprites/ani/";
 
   const map = {
+    // Paldea
+    "wooper-paldea": "wooperpaldea",
+
+    // Galar
+    "zigzagoon-galar": "zigzagoongalar",
+    "corsola-galar": "corsolagalar",
+
+    // Alola
+    "grimer-alola": "grimeralola",
+
+    // Hisui
+    "zorua-hisui": "zoruahisui",
+    "voltorb-hisui": "voltorbhisui",
+
+    // Special cases
     "mime-jr": "mimejr"
   };
 
-  let formatted = name.toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (map[name]) formatted = map[name];
+  let formatted;
+
+  if (map[name]) {
+    formatted = map[name];
+  } else {
+    formatted = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  }
 
   return base + formatted + ".gif";
 }
