@@ -205,11 +205,6 @@ function selectStarter(pokemon) {
   const mutated = Math.random() < 0.01;
   let sprite = getSprite(pokemon);
 
-  // Optional: shiny swap
-  if (mutated) {
-    sprite = sprite.replace("/ani/", "/ani-shiny/");
-  }
-
   document.getElementById("result").innerHTML = `
     <h2>SELECTED: ${pokemon.toUpperCase()}</h2>
     <img src="${sprite}" class="${mutated ? 'mutated-sprite' : ''}">
