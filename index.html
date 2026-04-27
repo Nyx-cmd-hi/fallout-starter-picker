@@ -2,40 +2,55 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fallout Pokémon Starter Picker</title>
+<title>Pip-Boy Starter Picker</title>
 
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
+  background: #0b1f0b;
+  color: #33ff33;
+  font-family: "Courier New", monospace;
   text-align: center;
+}
+
+/* Scanline effect */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,255,0,0.05),
+    rgba(0,255,0,0.05) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
 }
 
 h1 {
   margin-top: 20px;
+  text-shadow: 0 0 10px #33ff33;
 }
 
 select, button {
+  background: black;
+  color: #33ff33;
+  border: 1px solid #33ff33;
   padding: 10px;
   margin: 10px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
-}
-
-button {
+  font-family: inherit;
   cursor: pointer;
-  background: #334155;
-  color: white;
-  transition: 0.2s;
 }
 
 button:hover {
-  background: #475569;
+  background: #113311;
 }
 
+/* Cards */
 #cards {
   display: flex;
   justify-content: center;
@@ -44,60 +59,45 @@ button:hover {
 }
 
 .card {
-  width: 150px;
-  padding: 20px;
-  border-radius: 16px;
-  background: #1e293b;
+  width: 180px;
+  border: 1px solid #33ff33;
+  padding: 15px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: 0.2s;
 }
 
 .card:hover {
+  background: #113311;
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255,255,255,0.2);
 }
 
-.card h3 {
-  margin: 0;
+.card img {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
 }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(10px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-
+/* Result */
 #result {
   margin-top: 30px;
 }
 
 .mutated {
-  color: #22c55e;
+  color: #66ff66;
   font-weight: bold;
   animation: glow 1.5s infinite alternate;
 }
 
 @keyframes glow {
-  from {text-shadow: 0 0 5px #22c55e;}
-  to {text-shadow: 0 0 20px #22c55e;}
+  from { text-shadow: 0 0 5px #33ff33; }
+  to { text-shadow: 0 0 20px #66ff66; }
 }
-
-/* Faction Colors */
-.vault { background: #1e3a8a; }
-.waste { background: #3f6212; }
-.mental { background: #581c87; }
-.lavender { background: #4c1d95; }
-.silph { background: #064e3b; }
-
 </style>
 </head>
 
 <body>
 
-<h1>☢️ Starter Picker</h1>
+<h1>☢️ PIP-BOY STARTER SELECTOR</h1>
 
 <select id="faction">
   <option>Wastelander</option>
@@ -107,7 +107,7 @@ button:hover {
   <option>Vault Dwellers</option>
 </select>
 
-<button onclick="generate()">Generate Starters</button>
+<button onclick="generate()">SCAN FOR STARTERS</button>
 
 <div id="cards"></div>
 <div id="result"></div>
@@ -115,25 +115,34 @@ button:hover {
 <script>
 // ===== DATA =====
 const factions = {
-  "Wastelander": ["Stunky","Grimer","Wooper-Paldea","Goomy","Trubbish","Cubone","Gulpin","Zigzagoon-Galar","Rolycoly","Impidimp","Paras","Slugma","Grimer-Alola","Meowth","Purrloin"],
-  "Mental Legion": ["Spoink","Drowzee","Natu","Baltoy","Elgyem","Abra","Mime Jr.","Smoochum","Ralts","Gothita","Beldum","Riolu","Solosis","Psyduck","Hoothoot"],
-  "Lavender Town": ["Gastly","Misdreavus","Vulpix","Shuppet","Dreepy","Zorua-Hisui","Litwick","Yamask","Houndour","Greavard","Duskull","Honedge","Sandygast","Bramblin","Corsola-Galar"],
-  "Silph Cooperative": ["Koffing","Porygon","Klink","Magnemite","Elekid","Rattata","Zubat","Ekans","Voltorb","Voltorb-Hisui","Machop","Sandshrew","Tinkatink","Magby","Ditto"],
-  "Vault Dwellers": ["Bulbasaur","Squirtle","Charmander","Chikorita","Totodile","Cyndaquil","Treecko","Mudkip","Torchic","Turtwig","Piplup","Chimchar","Snivy","Oshawott","Tepig","Chespin","Froakie","Fennekin","Rowlet","Popplio","Litten","Grookey","Sobble","Scorbunny","Sprigatito","Quaxly","Fuecoco","Pikachu","Eevee"]
+  "Wastelander": ["stunky","grimer","wooper-paldea","goomy","trubbish","cubone","gulpin","zigzagoon-galar","rolycoly","impidimp","paras","slugma","grimer-alola","meowth","purrloin"],
+  "Mental Legion": ["spoink","drowzee","natu","baltoy","elgyem","abra","mime-jr","smoochum","ralts","gothita","beldum","riolu","solosis","psyduck","hoothoot"],
+  "Lavender Town": ["gastly","misdreavus","vulpix","shuppet","dreepy","zorua-hisui","litwick","yamask","houndour","greavard","duskull","honedge","sandygast","bramblin","corsola-galar"],
+  "Silph Cooperative": ["koffing","porygon","klink","magnemite","elekid","rattata","zubat","ekans","voltorb","voltorb-hisui","machop","sandshrew","tinkatink","magby","ditto"],
+  "Vault Dwellers": ["bulbasaur","squirtle","charmander","chikorita","totodile","cyndaquil","treecko","mudkip","torchic","turtwig","piplup","chimchar","snivy","oshawott","tepig","chespin","froakie","fennekin","rowlet","popplio","litten","grookey","sobble","scorbunny","sprigatito","quaxly","fuecoco","pikachu","eevee"]
 };
 
+// ===== UTIL =====
 function shuffle(arr) {
   return arr.sort(() => Math.random() - 0.5);
 }
 
-function getClass(faction) {
-  return {
-    "Wastelander": "waste",
-    "Mental Legion": "mental",
-    "Lavender Town": "lavender",
-    "Silph Cooperative": "silph",
-    "Vault Dwellers": "vault"
-  }[faction];
+// ===== SPRITE URL =====
+function getSprite(name) {
+  const base = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+
+  const map = {
+    "wooper-paldea": "1009",
+    "zigzagoon-galar": "263",
+    "grimer-alola": "88",
+    "zorua-hisui": "570",
+    "corsola-galar": "222",
+    "voltorb-hisui": "100",
+  };
+
+  if (map[name]) return base + map[name] + ".png";
+
+  return base + name + ".png";
 }
 
 // ===== GENERATE =====
@@ -146,9 +155,15 @@ function generate() {
 
   starters.forEach(p => {
     const div = document.createElement("div");
-    div.className = `card fade-in ${getClass(faction)}`;
-    div.innerHTML = `<h3>${p}</h3>`;
-    div.onclick = () => selectStarter(p, faction);
+    div.className = "card";
+
+    div.innerHTML = `
+      <img src="${getSprite(p)}">
+      <h3>${p}</h3>
+    `;
+
+    div.onclick = () => selectStarter(p);
+
     container.appendChild(div);
   });
 
@@ -156,15 +171,13 @@ function generate() {
 }
 
 // ===== SELECT =====
-function selectStarter(pokemon, faction) {
+function selectStarter(pokemon) {
   const mutated = Math.random() < 0.01;
 
-  const result = document.getElementById("result");
-
-  result.innerHTML = `
-    <h2>You chose ${pokemon}</h2>
-    <p>${pokemon} looks at you cautiously… then stays.</p>
-    ${mutated ? '<p class="mutated">☢️ Radioactive Mutation Detected!</p>' : ''}
+  document.getElementById("result").innerHTML = `
+    <h2>SELECTED: ${pokemon.toUpperCase()}</h2>
+    <p>Status: Bound to user</p>
+    ${mutated ? '<p class="mutated">☢️ MUTATION DETECTED</p>' : ''}
   `;
 }
 </script>
