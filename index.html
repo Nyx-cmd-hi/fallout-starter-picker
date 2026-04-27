@@ -129,20 +129,22 @@ function shuffle(arr) {
 
 // ===== SPRITE URL =====
 function getSprite(name) {
-  const base = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+  const base = "https://play.pokemonshowdown.com/sprites/ani/";
 
   const map = {
-    "wooper-paldea": "1009",
-    "zigzagoon-galar": "263",
-    "grimer-alola": "88",
-    "zorua-hisui": "570",
-    "corsola-galar": "222",
-    "voltorb-hisui": "100",
+    "wooper-paldea": "wooperpaldea",
+    "zigzagoon-galar": "zigzagoongalar",
+    "grimer-alola": "grimeralola",
+    "zorua-hisui": "zoruahisui",
+    "corsola-galar": "corsolagalar",
+    "voltorb-hisui": "voltorbhisui",
+    "mime-jr": "mimejr"
   };
 
-  if (map[name]) return base + map[name] + ".png";
+  let formatted = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (map[name]) formatted = map[name];
 
-  return base + name + ".png";
+  return base + formatted + ".gif";
 }
 
 // ===== GENERATE =====
