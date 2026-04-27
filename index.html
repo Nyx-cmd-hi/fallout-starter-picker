@@ -13,6 +13,40 @@ body {
   text-align: center;
 }
 
+/* Glitch animation */
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* Radiation flicker */
+@keyframes radiation {
+  0% { filter: hue-rotate(0deg) brightness(1); }
+  50% { filter: hue-rotate(90deg) brightness(1.4); }
+  100% { filter: hue-rotate(0deg) brightness(1); }
+}
+
+/* Apply when mutated */
+.mutated-sprite {
+  animation: glitch 0.2s infinite, radiation 1.5s infinite;
+  filter: contrast(1.3) saturate(1.5);
+}
+
+/* Optional CRT flicker boost */
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.85; }
+  100% { opacity: 1; }
+}
+
+.mutated-text {
+  animation: flicker 1s infinite;
+}
+
 /* Scanline effect */
 body::after {
   content: "";
@@ -169,11 +203,18 @@ function generate() {
 // ===== SELECT =====
 function selectStarter(pokemon) {
   const mutated = Math.random() < 0.01;
+  let sprite = getSprite(pokemon);
+
+  // Optional: shiny swap
+  if (mutated) {
+    sprite = sprite.replace("/ani/", "/ani-shiny/");
+  }
 
   document.getElementById("result").innerHTML = `
     <h2>SELECTED: ${pokemon.toUpperCase()}</h2>
+    <img src="${sprite}" class="${mutated ? 'mutated-sprite' : ''}">
     <p>Status: Bound to user</p>
-    ${mutated ? '<p class="mutated">☢️ MUTATION DETECTED</p>' : ''}
+    ${mutated ? '<p class="mutated mutated-text">☢️ MUTATION DETECTED ☢️</p>' : ''}
   `;
 }
 </script>
